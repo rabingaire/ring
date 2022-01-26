@@ -8,3 +8,7 @@ type Ring interface {
 	Capacity() int64
 }
 ```
+
+## Further Implementations
+
+- [ ] Thread safe implementation using sync.Mutex
