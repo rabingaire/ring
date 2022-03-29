@@ -1,6 +1,6 @@
 # Ring Buffer
 
-[![Go Version](https://img.shields.io/github/go-mod/go-version/rabingaire/ring)](https://tip.golang.org/doc/go1.17)
+[![Go Reference](https://pkg.go.dev/badge/github.com/rabingaire/ring.svg)](https://pkg.go.dev/github.com/rabingaire/ring)
 [![Go Report Card](https://goreportcard.com/badge/github.com/rabingaire/ring)](https://goreportcard.com/report/github.com/rabingaire/ring)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
