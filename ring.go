@@ -17,7 +17,7 @@ type Ring interface {
 	Capacity() int64
 }
 
-type ringBuffer struct {
+type RingBuffer struct {
 	buffer   []interface{}
 	head     int64
 	write    int64
@@ -26,12 +26,12 @@ type ringBuffer struct {
 }
 
 // New creates a new instance of ring buffer.
-func New(capacity int64) (*ringBuffer, error) {
+func New(capacity int64) (*RingBuffer, error) {
 	if capacity <= 0 {
 		return nil, ErrBufferCapacity
 	}
 
-	return &ringBuffer{
+	return &RingBuffer{
 		buffer:   make([]interface{}, capacity),
 		head:     0,
 		write:    0,
@@ -43,13 +43,13 @@ func New(capacity int64) (*ringBuffer, error) {
 // Put adds a new element to ring buffer.
 // If the ring buffer is already full,
 // the oldest element will be overwritten.
-func (r *ringBuffer) Put(value interface{}) {
+func (r *RingBuffer) Put(value interface{}) {
 	r.insertValue(value)
 }
 
 // Get and remove the oldest element.
 // If the ring buffer is empty, Get() will return error.
-func (r *ringBuffer) Get() (interface{}, error) {
+func (r *RingBuffer) Get() (interface{}, error) {
 	if r.isEmpty() {
 		return nil, ErrBufferEmpty
 	}
@@ -57,27 +57,27 @@ func (r *ringBuffer) Get() (interface{}, error) {
 }
 
 // Size returns current size of ring buffer.
-func (r ringBuffer) Size() int64 {
+func (r RingBuffer) Size() int64 {
 	return r.size
 }
 
 // Capacity returns capacity of ring buffer.
-func (r ringBuffer) Capacity() int64 {
+func (r RingBuffer) Capacity() int64 {
 	return r.capacity
 }
 
 // updateHead advances head, will snap around if goes over bound.
-func (r *ringBuffer) updateHead() {
+func (r *RingBuffer) updateHead() {
 	r.head = ((r.head + 1) % r.capacity)
 }
 
 // updateWrite advances write, will snap around if goes over bound.
-func (r *ringBuffer) updateWrite() {
+func (r *RingBuffer) updateWrite() {
 	r.write = ((r.write + 1) % r.capacity)
 }
 
 // removeValue removes value, advances head, decreases size and return removed value.
-func (r *ringBuffer) removeValue() interface{} {
+func (r *RingBuffer) removeValue() interface{} {
 	value := r.buffer[r.head]
 	r.buffer[r.head] = nil
 	r.size -= 1
@@ -88,7 +88,7 @@ func (r *ringBuffer) removeValue() interface{} {
 // insertValue will set value, checks if ring buffer is full,
 // if its full it advances head, if not it increases size.
 // finally it will advance write.
-func (r *ringBuffer) insertValue(value interface{}) {
+func (r *RingBuffer) insertValue(value interface{}) {
 	r.buffer[r.write] = value
 	if r.isFull() {
 		r.updateHead()
@@ -99,11 +99,11 @@ func (r *ringBuffer) insertValue(value interface{}) {
 }
 
 // isFull checks if ring buffer is full.
-func (r ringBuffer) isFull() bool {
+func (r RingBuffer) isFull() bool {
 	return r.size >= r.capacity
 }
 
 // isEmpty checks if ring buffer is empty.
-func (r ringBuffer) isEmpty() bool {
+func (r RingBuffer) isEmpty() bool {
 	return r.size == 0
 }

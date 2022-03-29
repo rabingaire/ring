@@ -15,7 +15,7 @@ func TestNew(t *testing.T) {
 
 	capacity = 4
 	buf, err = New(capacity)
-	expected := &ringBuffer{
+	expected := &RingBuffer{
 		buffer:   make([]interface{}, capacity),
 		head:     0,
 		write:    0,
