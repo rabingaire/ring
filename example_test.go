@@ -3,9 +3,9 @@ package ring
 import "fmt"
 
 func ExampleRing() {
-	r, err := New(0)
+	r, err := New[string](0)
 	fmt.Println(r, err)
-	r, err = New(5)
+	r, err = New[string](5)
 	r.Put("A")
 	fmt.Println(r.Size())
 	fmt.Println(r.Capacity())
@@ -54,5 +54,5 @@ func ExampleRing() {
 	// F <nil>
 	// G <nil>
 	// H <nil>
-	// <nil> buffer is empty
+	//  buffer is empty
 }

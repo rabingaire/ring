@@ -9,14 +9,14 @@ import (
 
 func TestNew(t *testing.T) {
 	capacity := int64(-1)
-	buf, err := New(capacity)
+	buf, err := New[int](capacity)
 	assert.Nil(t, buf, "ring/New():\nwant  nil\ngot  %+v", buf)
 	assert.EqualError(t, err, ErrBufferCapacity.Error(), "ring/New() error:\nwant  %+v\ngot  %+v", ErrBufferCapacity.Error(), err)
 
 	capacity = 4
-	buf, err = New(capacity)
-	expected := &RingBuffer{
-		buffer:   make([]interface{}, capacity),
+	buf, err = New[int](capacity)
+	expected := &RingBuffer[int]{
+		buffer:   make([]int, capacity),
 		head:     0,
 		write:    0,
 		size:     0,
@@ -51,7 +51,7 @@ func TestPut(t *testing.T) {
 
 	for idx, tt := range tests {
 		t.Run(fmt.Sprintf("Test case #%d", idx), func(t *testing.T) {
-			buf, err := New(tt.capacity)
+			buf, err := New[int](tt.capacity)
 			assert.Nil(t, err, "ring/New() error:\nwant  nil\ngot  %+v", err)
 			assert.Equal(t, tt.capacity, buf.Capacity(), "capacity:\nwant  %+v\ngot  %+v", tt.capacity, buf.Capacity())
 
@@ -107,7 +107,7 @@ func TestGet(t *testing.T) {
 
 	for idx, tt := range tests {
 		t.Run(fmt.Sprintf("Test case #%d", idx), func(t *testing.T) {
-			buf, err := New(tt.capacity)
+			buf, err := New[int](tt.capacity)
 			assert.Nil(t, err, "ring/New() error:\nwant  nil\ngot  %+v", err)
 			assert.Equal(t, tt.capacity, buf.Capacity(), "capacity:\nwant  %+v\ngot  %+v", tt.capacity, buf.Capacity())
 
@@ -123,7 +123,7 @@ func TestGet(t *testing.T) {
 				if err != nil {
 					assert.EqualError(t, err, tt.errorString, "ring/Get() error:\nwant  %+v\ngot  %+v", tt.errorString, err)
 				} else {
-					assert.Equal(t, v, value.(int), "ring/Get():\nwant  %+v\ngot  %+v", v, value.(int))
+					assert.Equal(t, v, value, "ring/Get():\nwant  %+v\ngot  %+v", v, value)
 				}
 			}
 
@@ -134,7 +134,7 @@ func TestGet(t *testing.T) {
 }
 
 func TestSize(t *testing.T) {
-	buf, err := New(4)
+	buf, err := New[int](4)
 	assert.Nil(t, err, "ring/New() error:\nwant  nil\ngot  %+v", err)
 
 	// when buf is empty
@@ -158,7 +158,7 @@ func TestSize(t *testing.T) {
 
 func TestCapacity(t *testing.T) {
 	capacity := int64(4)
-	buf, err := New(capacity)
+	buf, err := New[int](capacity)
 	assert.Nil(t, err, "ring/New() error:\nwant  nil\ngot  %+v", err)
 	output := buf.Capacity()
 	assert.Equal(t, capacity, output, "capacity:\nwant  %+v\ngot  %+v", capacity, output)
