@@ -10,9 +10,9 @@ var (
 	ErrBufferEmpty    = errors.New("buffer is empty")
 )
 
-type Ring interface {
-	Put(value interface{})
-	Get() interface{}
+type Ring[T any] interface {
+	Put(value T)
+	Get() T
 	Size() int64
 	Capacity() int64
 }

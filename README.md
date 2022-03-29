@@ -5,15 +5,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ```
-type Ring interface {
-	Put(value interface{})
-	Get() interface{}
+type Ring[T any] interface {
+	Put(value T)
+	Get() T
 	Size() int64
 	Capacity() int64
 }
 ```
 
-## Further Implementations
+### Further Implementations
 
 - [ ] Provide both thread safe and thread unsafe API
 - [ ] Thread safe implementation using sync.Mutex
