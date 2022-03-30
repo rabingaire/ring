@@ -1,11 +1,15 @@
-package ring
+package ring_test
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/rabingaire/ring"
+)
 
 func ExampleRing() {
-	r, err := New[string](0)
+	r, err := ring.New[string](0)
 	fmt.Println(r, err)
-	r, err = New[string](5)
+	r, err = ring.New[string](5)
 	r.Put("A")
 	fmt.Println(r.Size())
 	fmt.Println(r.Capacity())

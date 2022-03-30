@@ -25,45 +25,12 @@ type RingBuffer[T any] struct {
 	capacity int64
 }
 
-// New creates a new instance of ring buffer.
-func New[T any](capacity int64) (*RingBuffer[T], error) {
-	if capacity <= 0 {
-		return nil, ErrBufferCapacity
-	}
-
+// new returns a new instance of RingBuffer
+func new[T any](capacity int64) *RingBuffer[T] {
 	return &RingBuffer[T]{
 		buffer:   make([]T, capacity),
-		head:     0,
-		write:    0,
-		size:     0,
 		capacity: capacity,
-	}, nil
-}
-
-// Put adds a new element to ring buffer.
-// If the ring buffer is already full,
-// the oldest element will be overwritten.
-func (r *RingBuffer[T]) Put(value T) {
-	r.insertValue(value)
-}
-
-// Get and remove the oldest element.
-// If the ring buffer is empty, Get() will return error.
-func (r *RingBuffer[T]) Get() (T, error) {
-	if r.isEmpty() {
-		return getZero[T](), ErrBufferEmpty
 	}
-	return r.removeValue(), nil
-}
-
-// Size returns current size of ring buffer.
-func (r RingBuffer[T]) Size() int64 {
-	return r.size
-}
-
-// Capacity returns capacity of ring buffer.
-func (r RingBuffer[T]) Capacity() int64 {
-	return r.capacity
 }
 
 // updateHead advances head, will snap around if goes over bound.

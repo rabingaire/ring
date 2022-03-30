@@ -7,26 +7,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNew(t *testing.T) {
+func TestUnsafeNew(t *testing.T) {
 	capacity := int64(-1)
-	buf, err := New[int](capacity)
-	assert.Nil(t, buf, "ring/New():\nwant  nil\ngot  %+v", buf)
-	assert.EqualError(t, err, ErrBufferCapacity.Error(), "ring/New() error:\nwant  %+v\ngot  %+v", ErrBufferCapacity.Error(), err)
+	buf, err := UnsafeNew[int](capacity)
+	assert.Nil(t, buf, "UnsafeNew():\nwant  nil\ngot  %+v", buf)
+	assert.EqualError(t, err, ErrBufferCapacity.Error(), "UnsafeNew() error:\nwant  %+v\ngot  %+v", ErrBufferCapacity.Error(), err)
 
 	capacity = 4
-	buf, err = New[int](capacity)
-	expected := &RingBuffer[int]{
-		buffer:   make([]int, capacity),
-		head:     0,
-		write:    0,
-		size:     0,
-		capacity: capacity,
+	buf, err = UnsafeNew[int](capacity)
+	expected := &UnsafeRingBuffer[int]{
+		RingBuffer: new[int](capacity),
 	}
-	assert.Equal(t, expected, buf, "ring/New():\nwant  %+v\ngot  %+v", expected, buf)
-	assert.Nil(t, err, "ring/New() error:\nwant  nil\ngot  %+v", err)
+	assert.Equal(t, expected, buf, "UnsafeNew():\nwant  %+v\ngot  %+v", expected, buf)
+	assert.Nil(t, err, "UnsafeNew() error:\nwant  nil\ngot  %+v", err)
 }
 
-func TestPut(t *testing.T) {
+func TestPutUnsafe(t *testing.T) {
 	tests := []struct {
 		capacity     int64
 		putItems     []int
@@ -51,8 +47,8 @@ func TestPut(t *testing.T) {
 
 	for idx, tt := range tests {
 		t.Run(fmt.Sprintf("Test case #%d", idx), func(t *testing.T) {
-			buf, err := New[int](tt.capacity)
-			assert.Nil(t, err, "ring/New() error:\nwant  nil\ngot  %+v", err)
+			buf, err := UnsafeNew[int](tt.capacity)
+			assert.Nil(t, err, "UnsafeNew() error:\nwant  nil\ngot  %+v", err)
 			assert.Equal(t, tt.capacity, buf.Capacity(), "capacity:\nwant  %+v\ngot  %+v", tt.capacity, buf.Capacity())
 
 			for _, v := range tt.putItems {
@@ -65,7 +61,7 @@ func TestPut(t *testing.T) {
 	}
 }
 
-func TestGet(t *testing.T) {
+func TestGetUnsafe(t *testing.T) {
 	tests := []struct {
 		capacity              int64
 		putItems              []int
@@ -107,8 +103,8 @@ func TestGet(t *testing.T) {
 
 	for idx, tt := range tests {
 		t.Run(fmt.Sprintf("Test case #%d", idx), func(t *testing.T) {
-			buf, err := New[int](tt.capacity)
-			assert.Nil(t, err, "ring/New() error:\nwant  nil\ngot  %+v", err)
+			buf, err := UnsafeNew[int](tt.capacity)
+			assert.Nil(t, err, "UnsafeNew() error:\nwant  nil\ngot  %+v", err)
 			assert.Equal(t, tt.capacity, buf.Capacity(), "capacity:\nwant  %+v\ngot  %+v", tt.capacity, buf.Capacity())
 
 			for _, v := range tt.putItems {
@@ -121,9 +117,9 @@ func TestGet(t *testing.T) {
 			for _, v := range tt.expectedGetValues {
 				value, err := buf.Get()
 				if err != nil {
-					assert.EqualError(t, err, tt.errorString, "ring/Get() error:\nwant  %+v\ngot  %+v", tt.errorString, err)
+					assert.EqualError(t, err, tt.errorString, "Get() error:\nwant  %+v\ngot  %+v", tt.errorString, err)
 				} else {
-					assert.Equal(t, v, value, "ring/Get():\nwant  %+v\ngot  %+v", v, value)
+					assert.Equal(t, v, value, "Get():\nwant  %+v\ngot  %+v", v, value)
 				}
 			}
 
@@ -133,9 +129,9 @@ func TestGet(t *testing.T) {
 	}
 }
 
-func TestSize(t *testing.T) {
-	buf, err := New[int](4)
-	assert.Nil(t, err, "ring/New() error:\nwant  nil\ngot  %+v", err)
+func TestSizeUnsafe(t *testing.T) {
+	buf, err := UnsafeNew[int](4)
+	assert.Nil(t, err, "UnsafeNew() error:\nwant  nil\ngot  %+v", err)
 
 	// when buf is empty
 	output := buf.Size()
@@ -156,10 +152,10 @@ func TestSize(t *testing.T) {
 	assert.Equal(t, expected, output, "size:\nwant  %+v\ngot  %+v", expected, output)
 }
 
-func TestCapacity(t *testing.T) {
+func TestCapacityUnsafe(t *testing.T) {
 	capacity := int64(4)
-	buf, err := New[int](capacity)
-	assert.Nil(t, err, "ring/New() error:\nwant  nil\ngot  %+v", err)
+	buf, err := UnsafeNew[int](capacity)
+	assert.Nil(t, err, "UnsafeNew() error:\nwant  nil\ngot  %+v", err)
 	output := buf.Capacity()
 	assert.Equal(t, capacity, output, "capacity:\nwant  %+v\ngot  %+v", capacity, output)
 }

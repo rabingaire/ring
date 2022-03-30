@@ -12,8 +12,3 @@ type Ring[T any] interface {
 	Capacity() int64
 }
 ```
-
-### Further Implementations
-
-- [ ] Provide both thread safe and thread unsafe API
-- [ ] Thread safe implementation using sync.Mutex
